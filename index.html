@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenKnowledge | Free Digital Library</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#f6f8fc;--card:#fff;--text:#172033;
+--muted:#667085;--primary:#3457d5;--line:#e5e9f2
+}
+body.dark{
+--bg:#0c1220;--card:#131c2d;--text:#eef2ff;
+--muted:#a4aec4;--primary:#91a7ff;--line:#263149
+}
+body{
+font-family:Arial,sans-serif;background:var(--bg);
+color:var(--text);line-height:1.6;transition:.3s
+}
+header{
+position:sticky;top:0;background:var(--card);
+border-bottom:1px solid var(--line);z-index:10
+}
+nav{
+max-width:1150px;margin:auto;padding:18px 20px;
+display:flex;justify-content:space-between;align-items:center
+}
+.logo{font-size:23px;font-weight:bold;color:var(--primary)}
+nav a{margin-left:18px;text-decoration:none;color:var(--text)}
+button{
+cursor:pointer;border:0;border-radius:10px;padding:11px 16px;
+background:var(--primary);color:white;font-weight:bold
+}
+.hero{
+max-width:1150px;margin:auto;padding:75px 20px;
+display:grid;grid-template-columns:1fr 1fr;gap:35px;align-items:center
+}
+.hero h1{font-size:clamp(38px,6vw,70px);line-height:1.1}
+.hero h1 span{color:var(--primary)}
+.hero p{margin:20px 0;color:var(--muted);font-size:18px}
+.hero-art{
+background:linear-gradient(135deg,#dce5ff,#d8f5ed);
+height:320px;border-radius:25px;display:grid;place-items:center
+}
+.hero-art div{
+background:#3457d5;color:white;padding:40px;
+border-radius:15px;transform:rotate(-7deg);font-size:30px;
+box-shadow:0 20px 40px #0002
+}
+section{max-width:1150px;margin:auto;padding:45px 20px}
+.section-title{font-size:30px;margin-bottom:25px}
+.search{
+display:flex;gap:10px;margin-bottom:25px
+}
+input,select{
+padding:13px;border:1px solid var(--line);
+border-radius:10px;background:var(--card);color:var(--text)
+}
+input{flex:1;min-width:0}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px}
+.filters button{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.filters button.active{background:var(--primary);color:white}
+.grid{
+display:grid;grid-template-columns:repeat(4,1fr);gap:18px
+}
+.book{
+background:var(--card);border:1px solid var(--line);
+padding:14px;border-radius:15px;transition:.2s
+}
+.book:hover{transform:translateY(-5px)}
+.cover{
+height:180px;border-radius:10px;padding:20px;
+display:flex;flex-direction:column;justify-content:space-between;
+color:white;font-size:20px;font-weight:bold
+}
+.book h3{margin:12px 0 5px}
+.book p{color:var(--muted);font-size:14px;margin-bottom:12px}
+.book button{width:100%}
+.subjects{
+display:grid;grid-template-columns:repeat(5,1fr);gap:15px
+}
+.subject{
+background:var(--card);padding:22px;border-radius:14px;
+border:1px solid var(--line);text-align:center;cursor:pointer
+}
+.subject:hover{border-color:var(--primary)}
+.banner{
+background:linear-gradient(120deg,#17264c,#3457d5);
+color:white;padding:35px;border-radius:20px;text-align:center
+}
+footer{text-align:center;padding:35px;color:var(--muted)}
+.modal{
+display:none;position:fixed;inset:0;background:#000a;
+z-index:30;align-items:center;justify-content:center;padding:15px
+}
+.modal.show{display:flex}
+.reader{
+background:var(--card);color:var(--text);
+width:min(800px,100%);max-height:90vh;
+border-radius:18px;overflow:auto;padding:25px
+}
+.reader-top{display:flex;justify-content:space-between;gap:10px}
+.reader-content{font-family:Georgia,serif;font-size:19px;line-height:1.9;padding:25px 5px}
+.reader-content h2{margin-bottom:15px}
+.reader-content p{margin:15px 0}
+@media(max-width:850px){
+.hero{grid-template-columns:1fr;padding-top:45px}
+.grid{grid-template-columns:repeat(2,1fr)}
+.subjects{grid-template-columns:repeat(2,1fr)}
+nav a{display:none}
+}
+@media(max-width:450px){
+.hero-art{height:230px}
+.cover{height:140px;font-size:16px}
+.grid{gap:10px}
+.book{padding:9px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+<div class="logo">📚 OpenKnowledge</div>
+<div>
+<a href="#library">Library</a>
+<a href="#subjects">Subjects</a>
+<a href="#about">About</a>
+<button onclick="toggleDark()">☾</button>
+</div>
+</nav>
+</header>
+
+<div class="hero">
+<div>
+<h1>Learn Without<br><span>Limits.</span></h1>
+<p>Discover books, explore ideas, and build a lifelong learning habit. Your next great read is only a search away.</p>
+<a href="#library"><button>Explore Library →</button></a>
+</div>
+<div class="hero-art"><div>KNOWLEDGE<br>IS FREEDOM.</div></div>
+</div>
+
+<section id="library">
+<h2 class="section-title">Explore the Library</h2>
+
+<div class="search">
+<input id="search" placeholder="Search books, subjects, authors..." oninput="renderBooks()">
+<select id="sort" onchange="renderBooks()">
+<option value="featured">Featured</option>
+<option value="title">Title A-Z</option>
+</select>
+</div>
+
+<div class="filters">
+<button class="active" onclick="filterBooks('All',this)">All</button>
+<button onclick="filterBooks('Science',this)">Science</button>
+<button onclick="filterBooks('Literature',this)">Literature</button>
+<button onclick="filterBooks('History',this)">History</button>
+<button onclick="filterBooks('Technology',this)">Technology</button>
+<button onclick="filterBooks('Growth',this)">Personal Growth</button>
+</div>
+
+<div class="grid" id="bookGrid"></div>
+</section>
+
+<section id="subjects">
+<h2 class="section-title">Learn by Subject</h2>
+<div class="subjects">
+<div class="subject" onclick="filterBooks('Science')">🔬<br>Science</div>
+<div class="subject" onclick="filterBooks('Literature')">📖<br>Literature</div>
+<div class="subject" onclick="filterBooks('History')">🏛️<br>History</div>
+<div class="subject" onclick="filterBooks('Technology')">💻<br>Technology</div>
+<div class="subject" onclick="filterBooks('Growth')">🌱<br>Personal Growth</div>
+</div>
+</section>
+
+<section id="about">
+<div class="banner">
+<h2>Knowledge belongs to everyone.</h2>
+<p>Read, reflect, and keep growing—one page at a time.</p>
+</div>
+</section>
+
+<footer>© 2026 OpenKnowledge · A free learning space</footer>
+
+<div class="modal" id="reader">
+<div class="reader">
+<div class="reader-top">
+<h2 id="readerTitle">Book</h2>
+<button onclick="closeReader()">✕</button>
+</div>
+<div class="reader-content" id="readerContent"></div>
+<button onclick="changeFont(-1)">A−</button>
+<button onclick="changeFont(1)">A+</button>
+<button onclick="bookmark()">☆ Bookmark</button>
+</div>
+</div>
+
+<script>
+const books=[
+{
+id:1,title:"The Wonders of Science",subject:"Science",
+author:"OpenKnowledge",color:"#3558bd",
+description:"Discover the amazing world of scientific thinking.",
+content:`<h2>Chapter 1: Asking Questions</h2>
+<p>Science begins with curiosity. When we look carefully at the world, we notice patterns, surprises, and questions that invite investigation.</p>
+<p>A scientist does not need to know every answer. A scientist needs to ask clear questions and test ideas carefully.</p>
+<h2>Ideas and Evidence</h2>
+<p>An explanation becomes stronger when it is supported by evidence. Evidence can come from measurements, experiments, and careful observations.</p>
+<p>Scientific knowledge grows when people question ideas, investigate, and share discoveries.</p>`
+},
+{
+id:2,title:"Stories Across Time",subject:"Literature",
+author:"OpenKnowledge",color:"#9b4f78",
+description:"Explore stories, imagination, and human experience.",
+content:`<h2>Why Stories Matter</h2>
+<p>Stories are among humanity's oldest ways of sharing experience. A story can preserve a memory, explain a mystery, entertain a community, or help someone imagine a different life.</p>
+<p>When we read, we enter another perspective. We learn how characters make choices, face difficulties, and change.</p>`
+},
+{
+id:3,title:"A Short History of Ideas",subject:"History",
+author:"OpenKnowledge",color:"#b16b2e",
+description:"Discover ideas that shaped civilizations.",
+content:`<h2>The Power of an Idea</h2>
+<p>History is not only a record of kings, battles, and dates. It is also the story of ideas: how people understood nature, organized communities, exchanged knowledge, and imagined better futures.</p>
+<p>Ideas travel through trade, migration, education, translation, and conversation.</p>`
+},
+{
+id:4,title:"The Digital Mind",subject:"Technology",
+author:"OpenKnowledge",color:"#167c83",
+description:"Understand computers and the digital world.",
+content:`<h2>Thinking in Systems</h2>
+<p>A computer receives input, processes information according to instructions, and produces output.</p>
+<p>Programs are sets of instructions. Developers break large problems into smaller steps and test whether the result behaves as expected.</p>`
+},
+{
+id:5,title:"Habits for a Curious Life",subject:"Growth",
+author:"OpenKnowledge",color:"#4d8b52",
+description:"Practical ideas for learning consistently.",
+content:`<h2>Make Learning Visible</h2>
+<p>Learning grows through repeated attention. A small daily practice can be more sustainable than an occasional intense session.</p>
+<p>Keep a record of what you learn. A short note, a question, or a sentence in your own words can make progress visible.</p>`
+},
+{
+id:6,title:"Mathematics in Everyday Life",subject:"Science",
+author:"OpenKnowledge",color:"#5b4ca3",
+description:"Discover mathematical patterns around you.",
+content:`<h2>Numbers Around Us</h2>
+<p>Mathematics helps us describe quantity, change, shape, and relationships. It appears when we compare prices, estimate travel time, measure a room, or recognize patterns.</p>
+<p>Mathematics is not only about memorizing formulas; it is about explaining why a relationship works.</p>`
+}
+];
+
+let currentFilter="All",font=19,currentBook=null;
+
+function renderBooks(){
+let q=document.getElementById("search").value.toLowerCase();
+let list=books.filter(b=>
+(currentFilter==="All"||b.subject===currentFilter)&&
+(b.title+" "+b.subject+" "+b.author+" "+b.description).toLowerCase().includes(q)
+);
+if(document.getElementById("sort").value==="title")
+list.sort((a,b)=>a.title.localeCompare(b.title));
+
+document.getElementById("bookGrid").innerHTML=list.map(b=>`
+<div class="book">
+<div class="cover" style="background:${b.color}">
+<small>OPENKNOWLEDGE</small>
+<div>${b.title}</div>
+<small>${b.subject}</small>
+</div>
+<h3>${b.title}</h3>
+<p>${b.description}</p>
+<button onclick="openBook(${b.id})">Read Book →</button>
+</div>
+`).join("")||"<p>No books found.</p>";
+}
+
+function filterBooks(subject,button){
+currentFilter=subject;
+document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+if(button)button.classList.add("active");
+document.getElementById("library").scrollIntoView();
+renderBooks();
+}
+
+function openBook(id){
+currentBook=books.find(b=>b.id===id);
+document.getElementById("readerTitle").textContent=currentBook.title;
+document.getElementById("readerContent").innerHTML=currentBook.content;
+document.getElementById("reader").classList.add("show");
+document.body.style.overflow="hidden";
+}
+
+function closeReader(){
+document.getElementById("reader").classList.remove("show");
+document.body.style.overflow="";
+}
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+localStorage.setItem("dark",document.body.classList.contains("dark"));
+}
+
+function changeFont(n){
+font=Math.max(14,Math.min(32,font+n));
+document.getElementById("readerContent").style.fontSize=font+"px";
+}
+
+function bookmark(){
+if(!currentBook)return;
+let saved=JSON.parse(localStorage.getItem("bookmarks")||"[]");
+if(!saved.includes(currentBook.id))saved.push(currentBook.id);
+localStorage.setItem("bookmarks",JSON.stringify(saved));
+alert("Book bookmarked!");
+}
+
+if(localStorage.getItem("dark")==="true")
+document.body.classList.add("dark");
+
+renderBooks();
+</script>
+
+</body>
+  </html>
+  
